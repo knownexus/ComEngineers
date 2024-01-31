@@ -12,8 +12,8 @@ namespace ComEngineers.API.Models
         public int Id { get; set; }
         public DateTime TimeCode { get; set; }
         public required Session Session { get; set; }
-        public int XValue { get; set; }
-        public int YValue { get; set; }
-        public int ZValue { get; set; }
+        public float XValue { get; set; }
+        public float YValue { get; set; }
+        public float ZValue { get; set; }
     }
 }

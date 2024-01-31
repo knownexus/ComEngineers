@@ -12,7 +12,7 @@ namespace ComEngineers.API.Models
         public int Id { get; set; }
         public DateTime TimeCode { get; set; }
         public required Session Session { get; set; }
-        public int Value { get; set; }
+        public float Value { get; set; }
 
     }
 }

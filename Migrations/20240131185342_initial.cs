@@ -32,9 +32,9 @@ namespace ComEngineers.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TimeCode = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SessionId = table.Column<int>(type: "int", nullable: false),
-                    XValue = table.Column<int>(type: "int", nullable: false),
-                    YValue = table.Column<int>(type: "int", nullable: false),
-                    ZValue = table.Column<int>(type: "int", nullable: false)
+                    XValue = table.Column<float>(type: "real", nullable: false),
+                    YValue = table.Column<float>(type: "real", nullable: false),
+                    ZValue = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -55,9 +55,9 @@ namespace ComEngineers.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TimeCode = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SessionId = table.Column<int>(type: "int", nullable: false),
-                    XAxis = table.Column<int>(type: "int", nullable: false),
-                    YAxis = table.Column<int>(type: "int", nullable: false),
-                    ZAxis = table.Column<int>(type: "int", nullable: false)
+                    XAxis = table.Column<float>(type: "real", nullable: false),
+                    YAxis = table.Column<float>(type: "real", nullable: false),
+                    ZAxis = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -78,7 +78,7 @@ namespace ComEngineers.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TimeCode = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SessionId = table.Column<int>(type: "int", nullable: false),
-                    Value = table.Column<int>(type: "int", nullable: false)
+                    Value = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -99,7 +99,7 @@ namespace ComEngineers.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TimeCode = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SessionId = table.Column<int>(type: "int", nullable: false),
-                    Value = table.Column<int>(type: "int", nullable: false)
+                    Value = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -36,14 +36,14 @@ namespace ComEngineers.Migrations
                     b.Property<DateTime>("TimeCode")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("XValue")
-                        .HasColumnType("int");
+                    b.Property<float>("XValue")
+                        .HasColumnType("real");
 
-                    b.Property<int>("YValue")
-                        .HasColumnType("int");
+                    b.Property<float>("YValue")
+                        .HasColumnType("real");
 
-                    b.Property<int>("ZValue")
-                        .HasColumnType("int");
+                    b.Property<float>("ZValue")
+                        .HasColumnType("real");
 
                     b.HasKey("Id");
 
@@ -66,14 +66,14 @@ namespace ComEngineers.Migrations
                     b.Property<DateTime>("TimeCode")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("XAxis")
-                        .HasColumnType("int");
+                    b.Property<float>("XAxis")
+                        .HasColumnType("real");
 
-                    b.Property<int>("YAxis")
-                        .HasColumnType("int");
+                    b.Property<float>("YAxis")
+                        .HasColumnType("real");
 
-                    b.Property<int>("ZAxis")
-                        .HasColumnType("int");
+                    b.Property<float>("ZAxis")
+                        .HasColumnType("real");
 
                     b.HasKey("Id");
 
@@ -96,8 +96,8 @@ namespace ComEngineers.Migrations
                     b.Property<DateTime>("TimeCode")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Value")
-                        .HasColumnType("int");
+                    b.Property<float>("Value")
+                        .HasColumnType("real");
 
                     b.HasKey("Id");
 
@@ -136,8 +136,8 @@ namespace ComEngineers.Migrations
                     b.Property<DateTime>("TimeCode")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Value")
-                        .HasColumnType("int");
+                    b.Property<float>("Value")
+                        .HasColumnType("real");
 
                     b.HasKey("Id");
 
