@@ -19,5 +19,20 @@ namespace ComEngineers.API.Commands
 
             context.SaveChanges();
         }
+
+        public static List<Gyroscope> GetDataBySessionId(ComEngineersContext con, int sessionId)
+        {
+            var gyroscopes = con.Gyroscope.Where(gy => gy.Session.Id == sessionId)
+                .Select(gy => new Gyroscope
+                {
+                    Id = gy.Id,
+                    TimeCode = gy.TimeCode,
+                    Session = null,
+                    XAxis = gy.XAxis,
+                    YAxis = gy.YAxis,
+                    ZAxis = gy.ZAxis
+                }).ToList();
+            return gyroscopes;
+        }
     }
 }

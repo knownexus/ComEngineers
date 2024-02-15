@@ -19,5 +19,17 @@ namespace ComEngineers.API.Commands
 
             context.SaveChanges();
         }
+        public static List<Temperature> GetDataBySessionId(ComEngineersContext con, int sessionId)
+        {
+            var temperatures = con.Temperature.Where(tmp => tmp.Session.Id == sessionId)
+                .Select(tmp => new Temperature
+                {
+                    Id = tmp.Id,
+                    TimeCode = tmp.TimeCode,
+                    Session = tmp.Session,
+                    Value = tmp.Value
+                }).ToList();
+            return temperatures;
+        }
     }
 }

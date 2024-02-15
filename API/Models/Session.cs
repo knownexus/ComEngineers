@@ -13,13 +13,13 @@ namespace ComEngineers.API.Models
         [Required]
         public DateTime TimeCode { get; set; }
         [Required]
-        public  ICollection<HeartRate> HeartRates { get; set; }
+        public virtual ICollection<HeartRate> HeartRates { get; set; }
         [Required]
-        public  ICollection<Gyroscope> Gyroscopes { get; set; }
+        public virtual ICollection<Gyroscope> Gyroscopes { get; set; }
         [Required]
-        public  ICollection<Accelerometer> Accelerometers { get; set; }
+        public virtual ICollection<Accelerometer> Accelerometers { get; set; }
         [Required]
-        public  ICollection<Temperature> Temperatures { get; set; }
+        public virtual ICollection<Temperature> Temperatures { get; set; }
 
     }
 }

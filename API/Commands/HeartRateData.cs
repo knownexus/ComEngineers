@@ -19,5 +19,17 @@ namespace ComEngineers.API.Commands
 
             context.SaveChanges();
         }
+        public static List<HeartRate> GetDataBySessionId(ComEngineersContext con, int sessionId)
+        {
+            var heartRates = con.HeartRate.Where(hr => hr.Session.Id == sessionId)
+                .Select(hr => new HeartRate
+                {
+                    Id = hr.Id,
+                    TimeCode = hr.TimeCode,
+                    Session = hr.Session,
+                    Value = hr.Value
+                }).ToList();
+            return heartRates;
+        }
     }
 }

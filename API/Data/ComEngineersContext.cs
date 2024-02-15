@@ -15,6 +15,7 @@ namespace ComEngineers.API.Data
         public DbSet<Gyroscope> Gyroscope { get; set; }
         public DbSet<HeartRate> HeartRate { get; set; }
         public DbSet<Temperature> Temperature { get; set; }
+        public DbSet<TypesOfData> TypesOfData{ get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

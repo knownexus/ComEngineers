@@ -16,10 +16,9 @@ namespace ComEngineers
         private static void Main()
         {
             var context = new ComEngineersContext();
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1(context));
+            Application.Run(new DataInputForm(context));
         }
     }
 }

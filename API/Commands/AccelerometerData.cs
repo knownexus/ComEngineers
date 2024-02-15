@@ -19,17 +19,18 @@ namespace ComEngineers.API.Commands
             }
             con.SaveChanges();
         }
-        public static void GetDataBySessionId(ComEngineersContext con, int sessionId)
+        public static List<Accelerometer> GetDataBySessionId(ComEngineersContext con, int sessionId)
         {
-            var queryable = con.Accelerometer.Where(acc => acc.Session.Id == sessionId)
-                .Select(acc => new
+            var accelerometers = con.Accelerometer.Where(acc => acc.Session.Id == sessionId)
+                .Select(acc => new Accelerometer
                 {
-                    timecode = acc.TimeCode,
-                    x = acc.XValue,
-                    y = acc.YValue,
-                    z = acc.ZValue
-                } );
-           
+                    TimeCode = acc.TimeCode,
+                    XValue = acc.XValue,
+                    YValue = acc.YValue,
+                    ZValue = acc.ZValue,
+                    Session = acc.Session
+                }).ToList();
+            return accelerometers;
         }
     }
 }
