@@ -26,6 +26,7 @@ namespace ComEngineers
 
         string _labelX = "";
         string _labelY = "";
+        string labelName = "";
         public DataDisplayForm(DataInputForm priorForm)
         {
             InitializeComponent();
@@ -62,7 +63,8 @@ namespace ComEngineers
             var sessionId = Convert.ToInt32(SessionBox1.SelectedItem?.ToString());
             formsPlot1.Plot.Clear();
             formsPlot1.Refresh();
-
+            _labelX = "";
+            _labelY = "";
             var data = GetDataForMetric(MetricBox1.SelectedItem?.ToString(), sessionId);
             formsPlot1.Plot.Add.Scatter(data.dataX, data.dataY);
             formsPlot1.Plot.Axes.AutoScale();
@@ -92,6 +94,7 @@ namespace ComEngineers
             {
                 case "Accelerometer":
                     var aData = AccelerometerData.GetDataBySessionId(_Context, sessionId);
+                    aData.
                     //generate3DData(aData, sessionId);
                     break;
                 case "Gyroscope":
@@ -99,15 +102,25 @@ namespace ComEngineers
                     //generate3DData(gData, sessionId);
                     break;
                 case "HeartRate":
+                    labelName = "Heart Rate (BPM)";
                     var cleanedHeartRateData = CleanHeartRateData(sessionId);
                     var bpmData = GetBpmData(cleanedHeartRateData);
                     dataX = bpmData.dataX;
                     dataY = bpmData.dataY;
-                    _labelX = "Time (S)";
-                    _labelY = "Heart Rate (BPM)";
+                    _labelX = "Time (s)";
+                    if (_labelY != "" && _labelY != labelName)
+                    {
+                        _labelY += " and ";
+                    }
+                    else
+                    {
+                        _labelY = "";
+                    }
+                    _labelY += labelName;
 
                     break;
                 case "Temperature":
+                    labelName = "Temperature (c)";
                     firstId = TemperatureData.GetDataBySessionId(_Context, sessionId).First().Id;
                     firstValue = TemperatureData.GetDataBySessionId(_Context, sessionId).First().Value;
                     int count = 0;
@@ -126,8 +139,16 @@ namespace ComEngineers
                         temperatureList.Clear();
                     }
                    
-                    _labelX = "Time";
-                    _labelY = "Temperature";
+                    _labelX = "Time (s)";
+                    if (_labelY != "" && _labelY != labelName)
+                    {
+                        _labelY += " and ";
+                    }
+                    else
+                    {
+                        _labelY = "";
+                    }
+                    _labelY += labelName;
                     break;
             }
             return (dataX, dataY);

@@ -2,6 +2,7 @@
 using ComEngineers.API.Commands;
 using ComEngineers.API.Data;
 using ComEngineers.API.Models;
+using ComEngineers.DataProcessing;
 using TypesOfData = ComEngineers.API.Commands.TypesOfData;
 
 namespace ComEngineers;
@@ -41,65 +42,24 @@ public partial class DataInputForm : Form
 
     private void ParseData(string content)
     {
-        var lines = content.Split(",,,,,,");
-        lines = lines.Skip(1).SkipLast(1).ToArray();
         var sessionEntries = new List<Session>();
-        var accelerometerEntries = new List<Accelerometer>();
-        var gyroscopeEntries = new List<Gyroscope>();
-        var heartRateEntries = new List<HeartRate>();
-        var temperatureEntries = new List<Temperature>();
+       
         var session = new Session
         {
             TimeCode = DateTime.Now
         };
         sessionEntries.Add(session);
-        foreach (var line in lines) // 50ms
-        {
-            // Data  = PulseData*100, ax, ay, az, yaw, pitch, roll, temperature
-            var values = line.Split(",");
 
-            accelerometerEntries.Add(new Accelerometer
-            {
-                Session = session,
-                TimeCode = DateTime.Now,
-                XValue = float.Parse(values[1]),
-                YValue = float.Parse(values[2]),
-                ZValue = float.Parse(values[3])
-            });
-            gyroscopeEntries.Add(new Gyroscope
-            {
-                Session = session,
-                TimeCode = DateTime.Now,
-                YAxis = float.Parse(values[4]),
-                XAxis = float.Parse(values[5]),
-                ZAxis = float.Parse(values[6])
-            });
-            heartRateEntries.Add(new HeartRate
-            {
-                Session = session,
-                TimeCode = DateTime.Now,
-                Value = float.Parse(values[0])
-            });
-            temperatureEntries.Add(new Temperature
-            {
-                Session = session,
-                TimeCode = DateTime.Now,
-                Value = float.Parse(values[7])
-            });
-        }
+        var data = DataInput.ProcessData(content, session);
 
-        var confirmationMessage = "Upload Complete!\nDo you wish you store this data?";
-        var confirmationCaption = "Data Storage Confirmation";
+        const string confirmationCaption = "Data Storage Confirmation";
+        const string confirmationMessage = "Upload Complete!\nDo you wish you store this data?";
 
         var confirmResult = MessageBox.Show(confirmationMessage, confirmationCaption, MessageBoxButtons.YesNo);
 
         if (confirmResult != DialogResult.Yes) return;
 
-        SessionData.AddData(Context, sessionEntries);
-        AccelerometerData.AddData(Context, accelerometerEntries);
-        GyroscopeData.AddData(Context, gyroscopeEntries);
-        HeartRateData.AddData(Context, heartRateEntries);
-        TemperatureData.AddData(Context, temperatureEntries);
+        DataInput.AddProcessedData(Context, sessionEntries, data);
     }
 
     private void RequestLatest_Click(object sender, EventArgs e)
