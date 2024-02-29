@@ -96,5 +96,12 @@ namespace ComEngineers.API.Commands
 
             return session;
         }
+
+        public static Session? GetSessionById(ComEngineersContext con, int sessionId)
+        {
+            var session = con.Session.FirstOrDefault(x => x.Id == sessionId);
+
+            return session;
+        }
     }
 }

@@ -19,9 +19,9 @@ namespace ComEngineers.API.Commands
             }
             con.SaveChanges();
         }
-        public static List<Accelerometer> GetDataBySessionId(ComEngineersContext con, int sessionId)
+        public static List<Accelerometer?> GetDataBySessionId(ComEngineersContext con, int sessionId)
         {
-            var accelerometers = con.Accelerometer.Where(acc => acc.Session.Id == sessionId)
+            List<Accelerometer?> accelerometers = con.Accelerometer.Where(acc => acc.Session.Id == sessionId)
                 .Select(acc => new Accelerometer
                 {
                     TimeCode = acc.TimeCode,

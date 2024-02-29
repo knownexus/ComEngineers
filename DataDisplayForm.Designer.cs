@@ -30,6 +30,8 @@
         {
             ReturnToDataInputButton = new Button();
             formsPlot1 = new ScottPlot.WinForms.FormsPlot();
+            formsPlot2 = new ScottPlot.WinForms.FormsPlot();
+            formsPlot3 = new ScottPlot.WinForms.FormsPlot();
             UpdateChart = new Button();
             SessionBox1 = new ComboBox();
             SessionBox2 = new ComboBox();
@@ -54,18 +56,39 @@
             formsPlot1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             formsPlot1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             formsPlot1.DisplayScale = 1.25F;
-            formsPlot1.Location = new Point(195, 0);
+            formsPlot1.Location = new Point(213, -20);
             formsPlot1.Name = "formsPlot1";
-            formsPlot1.Size = new Size(593, 447);
+            formsPlot1.Size = new Size(620, 140);
             formsPlot1.TabIndex = 1;
-            formsPlot1.Load += formsPlot1_Load;
+            // 
+            // formsPlot2
+            // 
+            formsPlot2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            formsPlot2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            formsPlot2.DisplayScale = 1.25F;
+            formsPlot2.Location = new Point(213, 120);
+            formsPlot2.Name = "formsPlot2";
+            formsPlot2.Size = new Size(620, 140);
+            formsPlot2.TabIndex = 2;
+            formsPlot2.Visible = false;
+            // 
+            // formsPlot3
+            // 
+            formsPlot3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            formsPlot3.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            formsPlot3.DisplayScale = 1.25F;
+            formsPlot3.Location = new Point(213, 260);
+            formsPlot3.Name = "formsPlot3";
+            formsPlot3.Size = new Size(620, 140);
+            formsPlot3.TabIndex = 3;
+            formsPlot3.Visible = false;
             // 
             // UpdateChart
             // 
             UpdateChart.Location = new Point(22, 326);
             UpdateChart.Name = "UpdateChart";
             UpdateChart.Size = new Size(159, 29);
-            UpdateChart.TabIndex = 2;
+            UpdateChart.TabIndex = 4;
             UpdateChart.Text = "Update Chart";
             UpdateChart.UseVisualStyleBackColor = true;
             UpdateChart.Click += UpdateChart_Click;
@@ -75,7 +98,7 @@
             SessionBox1.Location = new Point(30, 50);
             SessionBox1.Name = "SessionBox1";
             SessionBox1.Size = new Size(151, 28);
-            SessionBox1.TabIndex = 3;
+            SessionBox1.TabIndex = 5;
             SessionBox1.Text = "Session ID";
             SessionBox1.SelectedIndexChanged += SessionBox1_SelectedIndexChanged;
             // 
@@ -85,7 +108,7 @@
             SessionBox2.Location = new Point(30, 199);
             SessionBox2.Name = "SessionBox2";
             SessionBox2.Size = new Size(151, 28);
-            SessionBox2.TabIndex = 4;
+            SessionBox2.TabIndex = 6;
             SessionBox2.Text = "Session ID";
             SessionBox2.SelectedIndexChanged += SessionBox2_SelectedIndexChanged;
             // 
@@ -95,7 +118,7 @@
             MetricBox1.Location = new Point(30, 84);
             MetricBox1.Name = "MetricBox1";
             MetricBox1.Size = new Size(151, 28);
-            MetricBox1.TabIndex = 5;
+            MetricBox1.TabIndex = 7;
             MetricBox1.Text = "Metric";
             MetricBox1.Visible = false;
             MetricBox1.SelectedIndexChanged += MetricBox1_SelectedIndexChanged_1;
@@ -106,7 +129,7 @@
             MetricBox2.Location = new Point(30, 233);
             MetricBox2.Name = "MetricBox2";
             MetricBox2.Size = new Size(151, 28);
-            MetricBox2.TabIndex = 6;
+            MetricBox2.TabIndex = 8;
             MetricBox2.Text = "Metric";
             MetricBox2.Visible = false;
             MetricBox2.SelectedIndexChanged += MetricBox2_SelectedIndexChanged;
@@ -116,7 +139,7 @@
             ClearButton1.Location = new Point(53, 118);
             ClearButton1.Name = "ClearButton1";
             ClearButton1.Size = new Size(94, 29);
-            ClearButton1.TabIndex = 7;
+            ClearButton1.TabIndex = 9;
             ClearButton1.Text = "Clear";
             ClearButton1.UseVisualStyleBackColor = true;
             ClearButton1.Click += ClearButton1_Click;
@@ -126,7 +149,7 @@
             ClearButton2.Location = new Point(53, 267);
             ClearButton2.Name = "ClearButton2";
             ClearButton2.Size = new Size(94, 29);
-            ClearButton2.TabIndex = 8;
+            ClearButton2.TabIndex = 10;
             ClearButton2.Text = "Clear";
             ClearButton2.UseVisualStyleBackColor = true;
             ClearButton2.Click += ClearButton2_Click;
@@ -143,6 +166,8 @@
             Controls.Add(SessionBox2);
             Controls.Add(SessionBox1);
             Controls.Add(UpdateChart);
+            Controls.Add(formsPlot3);
+            Controls.Add(formsPlot2);
             Controls.Add(formsPlot1);
             Controls.Add(ReturnToDataInputButton);
             Name = "DataDisplayForm";
@@ -155,6 +180,8 @@
 
         private Button ReturnToDataInputButton;
         private ScottPlot.WinForms.FormsPlot formsPlot1;
+        private ScottPlot.WinForms.FormsPlot formsPlot2;
+        private ScottPlot.WinForms.FormsPlot formsPlot3;
         private Button UpdateChart;
         private ComboBox SessionBox1;
         private ComboBox SessionBox2;

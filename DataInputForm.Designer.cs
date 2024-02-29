@@ -34,7 +34,7 @@ namespace ComEngineers
             label1 = new Label();
             RequestLatest = new Button();
             SessionId_Label = new Label();
-            comboBox1 = new ComboBox();
+            sessionListBox = new ComboBox();
             loadSessionButton = new Button();
             DisplayDataButton = new Button();
             SuspendLayout();
@@ -80,15 +80,15 @@ namespace ComEngineers
             SessionId_Label.Size = new Size(0, 20);
             SessionId_Label.TabIndex = 3;
             // 
-            // comboBox1
+            // sessionListBox
             // 
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(133, 253);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(151, 28);
-            comboBox1.TabIndex = 4;
-            comboBox1.Text = "Session Ids";
-            comboBox1.SelectedIndexChanged += ComboBox1_SelectedIndexChanged;
+            sessionListBox.FormattingEnabled = true;
+            sessionListBox.Location = new Point(133, 253);
+            sessionListBox.Name = "sessionListBox";
+            sessionListBox.Size = new Size(151, 28);
+            sessionListBox.TabIndex = 4;
+            sessionListBox.Text = "Session Ids";
+            sessionListBox.SelectedIndexChanged += SessionListBoxSelectedIndexChanged;
             // 
             // loadSessionButton
             // 
@@ -118,7 +118,7 @@ namespace ComEngineers
             ClientSize = new Size(617, 429);
             Controls.Add(DisplayDataButton);
             Controls.Add(loadSessionButton);
-            Controls.Add(comboBox1);
+            Controls.Add(sessionListBox);
             Controls.Add(SessionId_Label);
             Controls.Add(RequestLatest);
             Controls.Add(label1);
@@ -126,7 +126,7 @@ namespace ComEngineers
             Margin = new Padding(4, 5, 4, 5);
             Name = "DataInputForm";
             Text = "Data Input Form";
-            Load += Form1_Load;
+            Load += DataInputForm_Load;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -137,7 +137,7 @@ namespace ComEngineers
         private System.Windows.Forms.Label label1;
         private Button RequestLatest;
         private Label SessionId_Label;
-        private ComboBox comboBox1;
+        private ComboBox sessionListBox;
         private Button loadSessionButton;
         private Button DisplayDataButton;
     }

@@ -1,18 +1,7 @@
 ﻿using ComEngineers.API.Commands;
 using ComEngineers.API.Data;
 using ComEngineers.API.Models;
-using ScottPlot;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static OpenTK.Graphics.OpenGL.GL;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using ComEngineers.DataProcessing;
 using Color = ScottPlot.Color;
 using TypesOfData = ComEngineers.API.Commands.TypesOfData;
 
@@ -22,93 +11,220 @@ namespace ComEngineers
     {
         private readonly DataInputForm _priorForm;
         private readonly string[] _dataTypes;
-        private readonly ComEngineersContext _Context;
+        private readonly ComEngineersContext _context;
 
-        string _labelX = "";
-        string _labelY = "";
-        string labelName = "";
-        public DataDisplayForm(DataInputForm priorForm)
+        private string _labelX = "";
+        private string _labelY = "";
+        private string _labelName = "";
+        private string? _previousMetric1 = "";
+        private string? _previousMetric2 = "";
+        private int _previousSession1 = -1;
+        private int _previousSession2 = -1;
+
+        public DataDisplayForm(DataInputForm priorForm, Session? selectedSession)
         {
             InitializeComponent();
             _priorForm = priorForm;
-            _Context = priorForm.Context;
-            foreach (var id in SessionData.GetSessionIds(_Context))
+            _context = priorForm.Context;
+            SessionBox1.SelectedItem = selectedSession!.Id;
+            foreach (var id in SessionData.GetSessionIds(_context))
             {
                 SessionBox1.Items.Add(id);
                 SessionBox2.Items.Add(id);
             }
 
             _dataTypes = TypesOfData.GetDataTypes(this._priorForm.Context);
-
-
-
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             _priorForm.Show();
         }
+
         private void ReturnToDataInputButton_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-        private void formsPlot1_Load(object sender, EventArgs e)
-        {
-        }
-
         private void UpdateChart_Click(object sender, EventArgs e)
         {
+            var sessionId1 = Convert.ToInt32(SessionBox1.SelectedItem?.ToString());
+            var sessionId2 = Convert.ToInt32(SessionBox2.SelectedItem?.ToString());
+            var metric1Value = MetricBox1.SelectedItem?.ToString();
+            var metric2Value = MetricBox2.SelectedItem?.ToString();
+            UpdateGraphSizes(metric1Value);
 
-            var sessionId = Convert.ToInt32(SessionBox1.SelectedItem?.ToString());
-            formsPlot1.Plot.Clear();
-            formsPlot1.Refresh();
+            if (IsUnchanged(sessionId1, sessionId2, metric1Value, metric2Value))
+            {
+                RefreshPlots();
+                return;
+            }
+            ResetPlots();
+            RefreshPlots();
+
             _labelX = "";
             _labelY = "";
-            var data = GetDataForMetric(MetricBox1.SelectedItem?.ToString(), sessionId);
-            formsPlot1.Plot.Add.Scatter(data.dataX, data.dataY);
-            formsPlot1.Plot.Axes.AutoScale();
-            formsPlot1.Refresh();
+            _previousMetric1 = metric1Value;
+            _previousMetric2 = metric2Value;
+            _previousSession1 = sessionId1;
+            _previousSession2 = sessionId2;
+
+            (List<double> dataY1, List<double> dataY2, List<double> dataY3, List<double> dataX) data3D;
+            (List<double> dataX, List<double> dataY) data;
+
+            if (metric1Value is "Accelerometer" or "Gyroscope")
+            {
+                formsPlot2.Visible = true;
+                formsPlot3.Visible = true;
+
+
+                data3D = Get3dDataForMetric(MetricBox1.SelectedItem?.ToString(), sessionId1);
+                formsPlot1.Plot.Add.Scatter(data3D.dataX, data3D.dataY1, Color.FromHex("#111fff"));
+                formsPlot2.Plot.Add.Scatter(data3D.dataX, data3D.dataY2, Color.FromHex("#119fff"));
+                formsPlot3.Plot.Add.Scatter(data3D.dataX, data3D.dataY3, Color.FromHex("#11ffff"));
+
+                _labelY += metric1Value is "Accelerometer" ? "(Gs)" : "(degrees)";
+
+                formsPlot1.Plot.YLabel("X " + _labelY);
+                formsPlot2.Plot.YLabel("Y " + _labelY);
+                formsPlot3.Plot.YLabel("Z " + _labelY);
+            }
+            else
+            {
+                formsPlot2.Visible = false;
+                formsPlot3.Visible = false;
+                data = GetDataForMetric(MetricBox1.SelectedItem?.ToString(), sessionId1);
+                formsPlot1.Plot.Add.Scatter(data.dataX, data.dataY);
+                formsPlot1.Plot.YLabel(_labelY);
+            }
 
             if (SessionBox2.SelectedItem != null)
             {
-                sessionId = Convert.ToInt32(SessionBox2.SelectedItem?.ToString());
-                data = GetDataForMetric(MetricBox2.SelectedItem?.ToString(), sessionId);
-                formsPlot1.Plot.Add.Scatter(data.dataX, data.dataY);
-                formsPlot1.Plot.Axes.AutoScale();
-                formsPlot1.Refresh();
+                sessionId1 = Convert.ToInt32(SessionBox2.SelectedItem?.ToString());
+                if(metric2Value is "Accelerometer" or "Gyroscope")
+                {
+                    formsPlot2.Visible = true;
+                    formsPlot3.Visible = true;
+                    data3D = Get3dDataForMetric(MetricBox1.SelectedItem?.ToString(), sessionId1);
+                    formsPlot1.Plot.Add.Scatter(data3D.dataX, data3D.dataY1, Color.FromHex("#ff1111"));
+                    formsPlot2.Plot.Add.Scatter(data3D.dataX, data3D.dataY2, Color.FromHex("#ff7111"));
+                    formsPlot3.Plot.Add.Scatter(data3D.dataX, data3D.dataY3, Color.FromHex("#ff6699"));
+                }
+                else
+                {
+                    formsPlot2.Visible = false;
+                    formsPlot3.Visible = false;
+                    data = GetDataForMetric(MetricBox1.SelectedItem?.ToString(), sessionId1);
+                    formsPlot1.Plot.Add.Scatter(data.dataX, data.dataY);
+                }
             }
 
             formsPlot1.Plot.XLabel(_labelX);
-            formsPlot1.Plot.YLabel(_labelY);
+            formsPlot2.Plot.XLabel(_labelX);
+            formsPlot3.Plot.XLabel(_labelX);
 
+            AutoScalePlots();
+            RefreshPlots();
         }
 
-        private (List<double> dataX, List<double> dataY) GetDataForMetric(string? item, int sessionId)
+        private bool IsUnchanged(int sessionId1, int sessionId2, string? metric1Value, string? metric2Value)
         {
-            List<double> dataX = new List<double>();
-            List<double> dataY = new List<double>();
-            int firstId;
-            float firstValue;
+            return metric1Value == _previousMetric1 &&
+                   metric2Value == _previousMetric2 && 
+                   sessionId1 == _previousSession1 && 
+                   sessionId2 == _previousSession2;
+        }
+
+        private void ResetPlots()
+        {
+            formsPlot1.Plot.Clear();
+            formsPlot2.Plot.Clear();
+            formsPlot3.Plot.Clear();
+            RefreshPlots();
+        }
+        private void RefreshPlots()
+        {
+            formsPlot1.Refresh();
+            formsPlot2.Refresh();
+            formsPlot3.Refresh();
+        }
+        private void AutoScalePlots()
+        {
+            formsPlot1.Plot.Axes.AutoScale();
+            formsPlot2.Plot.Axes.AutoScale();
+            formsPlot3.Plot.Axes.AutoScale();
+        }
+        private (List<double> dataY1, List<double> dataY2, List<double> dataY3, List<double> dataX) Get3dDataForMetric(
+            string? item, int sessionId)
+        {
+            List<double> dataY1 = [];
+            List<double> dataY2 = [];
+            List<double> dataY3 = [];
+            List<double> dataX = [];
+            (List<double> xValues, List<double> yValues, List<double> zValues, List<double> timeCode) data;
+
             switch (item)
             {
                 case "Accelerometer":
-                    var aData = AccelerometerData.GetDataBySessionId(_Context, sessionId);
-                    aData.
+                    var aData = AccelerometerData.GetDataBySessionId(_context, sessionId);
+                    data = aData.Get3dData();
+
+                    dataY1 = data.xValues;
+                    dataY2 = data.yValues;
+                    dataY3 = data.zValues;
+                    dataX = data.timeCode;
+                    _labelX = "Time";
                     //generate3DData(aData, sessionId);
                     break;
                 case "Gyroscope":
-                    var gData = GyroscopeData.GetDataBySessionId(_Context, sessionId);
+                    var gData = GyroscopeData.GetDataBySessionId(_context, sessionId);
+
+                    data = gData.Get3dData();
+
+                    dataY1 = data.xValues;
+                    dataY2 = data.yValues;
+                    dataY3 = data.zValues;
+                    dataX = data.timeCode;
+                    _labelX = "Time";
                     //generate3DData(gData, sessionId);
                     break;
+            }
+
+            return (dataY1, dataY2, dataY3, dataX);
+        }
+
+        private void UpdateGraphSizes(string? metric)
+        {
+            if (metric is "Accelerometer" or "Gyroscope")
+            {
+                formsPlot1.Size = formsPlot1.Size with { Height = (int)(this.Size.Height * 0.3) };
+                formsPlot2.Size = formsPlot1.Size;
+                formsPlot2.Location = formsPlot1.Location with
+                {
+                    Y = formsPlot1.Location.Y + (formsPlot1.Size.Height * 1)
+                };
+                formsPlot3.Size = formsPlot1.Size;
+                formsPlot3.Location = formsPlot1.Location with
+                {
+                    Y = formsPlot1.Location.Y + (formsPlot1.Size.Height * 2)
+                };
+            }
+            else
+                formsPlot1.Size = formsPlot1.Size with { Height = (int)(this.Size.Height * 0.9) };
+        }
+        private (List<double> dataX, List<double> dataY) GetDataForMetric(string? item, int sessionId)
+        {
+            var dataX = new List<double>();
+            var dataY = new List<double>();
+            switch (item)
+            {
                 case "HeartRate":
-                    labelName = "Heart Rate (BPM)";
-                    var cleanedHeartRateData = CleanHeartRateData(sessionId);
-                    var bpmData = GetBpmData(cleanedHeartRateData);
+                    _labelName = "Heart Rate (BPM)";
+                    var bpmData = DataDisplayProcessing.GetBpmData(sessionId, _context);
                     dataX = bpmData.dataX;
                     dataY = bpmData.dataY;
                     _labelX = "Time (s)";
-                    if (_labelY != "" && _labelY != labelName)
+                    if (_labelY != "" && _labelY != _labelName)
                     {
                         _labelY += " and ";
                     }
@@ -116,31 +232,18 @@ namespace ComEngineers
                     {
                         _labelY = "";
                     }
-                    _labelY += labelName;
+
+                    _labelY += _labelName;
 
                     break;
                 case "Temperature":
-                    labelName = "Temperature (c)";
-                    firstId = TemperatureData.GetDataBySessionId(_Context, sessionId).First().Id;
-                    firstValue = TemperatureData.GetDataBySessionId(_Context, sessionId).First().Value;
-                    int count = 0;
-                    List<double> temperatureList = new List<double>();
-                    foreach (var entry in TemperatureData.GetDataBySessionId(_Context, sessionId))
-                    {
-                        if (temperatureList.Count < 10)
-                        {
-                            temperatureList.Add(entry.Value);
-                            continue;
-                        }
+                    _labelName = "Temperature (c)";
+                    var (dataForX, dataForY) = DataDisplayProcessing.TemperatureData(sessionId, _context);
+                    dataX.AddRange(dataForX);
+                    dataY.AddRange(dataForY);
 
-                        var avg = temperatureList.Average();
-                        dataX.Add(++count);
-                        dataY.Add(avg);
-                        temperatureList.Clear();
-                    }
-                   
                     _labelX = "Time (s)";
-                    if (_labelY != "" && _labelY != labelName)
+                    if (_labelY != "" && _labelY != _labelName)
                     {
                         _labelY += " and ";
                     }
@@ -148,80 +251,12 @@ namespace ComEngineers
                     {
                         _labelY = "";
                     }
-                    _labelY += labelName;
+
+                    _labelY += _labelName;
                     break;
             }
-            return (dataX, dataY);
-        }
-
-        private static (List<double> dataX, List<double> dataY) GetBpmData(List<double> cleanedHeartRateData)
-        {
-            var dataY = new List<double>();
-            var dataX = new List<double>();
-            var samples = new List<double>();
-            var bpmData = new List<double>();
-            double bpmCounter = 0;
-            double count = 0;
-            foreach (var value in cleanedHeartRateData)
-            {
-                const double sampleRate = 50;
-                if (samples.Count < sampleRate)
-                {
-                    samples.Add(value);
-                    continue;
-                }
-
-                foreach (var entry in samples.Where(entry => entry > 0))
-                {
-                    bpmCounter++;
-                }
-
-                var multiplierToMinute = 600 / (sampleRate + count++);
-
-                var bpm = bpmCounter * multiplierToMinute;
-                bpmData.Add(bpm);
-
-                bpmCounter = 0;
-                samples.Add(value);
-
-                if (count % 10 == 0)
-                {
-                    var lastTen = bpmData.Skip(Math.Max(0, bpmData.Count() - 10));
-                    var avgValue = lastTen.Average();
-                    dataY.Add(avgValue);
-                    dataX.Add(count / 10);
-                }
-            }
 
             return (dataX, dataY);
-        }
-
-        private List<double> CleanHeartRateData(int sessionId)
-        {
-            var firstValue = HeartRateData.GetDataBySessionId(_Context, sessionId).First().Value;
-            var data = HeartRateData.GetDataBySessionId(_Context, sessionId);
-            var yValues = new List<double>();
-            float previousValue = 0;
-
-            foreach (var entry in data)
-            {
-                // Remove magic number
-                var cleanedValues = (entry.Value / 70) - 1;
-                // Remove this when clean data available
-                if ((firstValue / 70) > 1.5)
-                    cleanedValues -= 1;
-
-                if (cleanedValues < 0.1)
-                    cleanedValues = 0;
-
-                if (previousValue > 0)
-                    yValues.Add(0);
-                else
-                    yValues.Add(cleanedValues);
-
-                previousValue = cleanedValues;
-            }
-            return yValues;
         }
 
         private void DataDisplayForm_Load(object sender, EventArgs e)
@@ -235,8 +270,10 @@ namespace ComEngineers
                 {
                     MetricBox1.Items.Add(type);
                 }
+
             MetricBox1.Visible = true;
         }
+
         private void SessionBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (MetricBox2.Items.Count == 0)
@@ -244,31 +281,33 @@ namespace ComEngineers
                 {
                     MetricBox2.Items.Add(type);
                 }
+
             MetricBox2.Visible = true;
         }
+
         private void MetricBox1_SelectedIndexChanged_1(object sender, EventArgs e)
         {
             MetricBox2.SelectedItem = MetricBox1.SelectedItem;
         }
+
         private void MetricBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-
         }
 
         private void ClearButton1_Click(object sender, EventArgs e)
         {
             SessionBox1.SelectedItem = null;
-            SessionBox1.Text = "Session ID";
+            SessionBox1.Text = @"Session ID";
             MetricBox1.SelectedItem = null;
-            MetricBox1.Text = "Metric";
+            MetricBox1.Text = @"Metric";
         }
 
         private void ClearButton2_Click(object sender, EventArgs e)
         {
             SessionBox2.SelectedItem = null;
-            SessionBox2.Text = "Session ID";
+            SessionBox2.Text = @"Session ID";
             MetricBox2.SelectedItem = null;
-            MetricBox2.Text = "Metric";
+            MetricBox2.Text = @"Metric";
         }
     }
 }

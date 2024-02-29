@@ -10,7 +10,8 @@ namespace ComEngineers;
 public partial class DataInputForm : Form
 {
     public readonly ComEngineersContext Context;
-    private int selectedId;
+    private int _selectedId;
+    private Session? _selectedSession;
 
     public DataInputForm(ComEngineersContext context)
     {
@@ -18,8 +19,11 @@ public partial class DataInputForm : Form
         Context = context;
         TypesOfData.AddData(Context);
 
-        foreach (var id in SessionData.GetSessionIds(Context)) comboBox1.Items.Add(id);
-    }
+        foreach (var item in SessionData.GetSessionIds(Context))
+        {
+            sessionListBox.Items.Add(item);
+        }
+    } 
 
 
     private void Upload_Button_Click(object sender, EventArgs e)
@@ -28,12 +32,20 @@ public partial class DataInputForm : Form
         dialog.Filter = "CSV Files | *.csv"; // file types, that will be allowed to upload
         dialog.Multiselect = false;
         if (dialog.ShowDialog() != DialogResult.OK) return;
-
         var path = dialog.FileName;
-        using var reader = new StreamReader(new FileStream(path, FileMode.Open), new UTF8Encoding());
+        try
+        {
+            using var reader = new StreamReader(new FileStream(path, FileMode.Open), new UTF8Encoding());
+            var content = reader.ReadToEnd();
+            ParseData(content);
+        }
+        catch (IOException)
+        {
+            const string confirmationCaption = "Failed to Read File";
+            const string confirmationMessage = "Please ensure selected file is not open in another program";
 
-        var content = reader.ReadToEnd();
-        ParseData(content);
+            MessageBox.Show(confirmationMessage, confirmationCaption, MessageBoxButtons.OK);
+        }
     }
 
     private void label1_Click(object sender, EventArgs e)
@@ -44,13 +56,8 @@ public partial class DataInputForm : Form
     {
         var sessionEntries = new List<Session>();
        
-        var session = new Session
-        {
-            TimeCode = DateTime.Now
-        };
-        sessionEntries.Add(session);
 
-        var data = DataInput.ProcessData(content, session);
+        var data = DataInput.ProcessData(content, Context);
 
         const string confirmationCaption = "Data Storage Confirmation";
         const string confirmationMessage = "Upload Complete!\nDo you wish you store this data?";
@@ -59,37 +66,38 @@ public partial class DataInputForm : Form
 
         if (confirmResult != DialogResult.Yes) return;
 
-        DataInput.AddProcessedData(Context, sessionEntries, data);
+        DataInput.AddProcessedData(Context, data);
+        var newSession = SessionData.GetLatestSession(Context);
+        sessionListBox.Items.Add(newSession.Id);
     }
 
     private void RequestLatest_Click(object sender, EventArgs e)
     {
         var session = SessionData.GetLatestSession(Context);
         SessionId_Label.Text = session.Id.ToString();
-        //session.
     }
 
-    private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+    private void SessionListBoxSelectedIndexChanged(object sender, EventArgs e)
     {
-        selectedId = int.Parse(comboBox1.SelectedItem?.ToString() ?? "-1");
+        _selectedId = int.Parse(sessionListBox.SelectedItem?.ToString() ?? "-1");
     }
 
     private void LoadSessionButton_Click(object sender, EventArgs e)
     {
-        if (selectedId == 0)
+        if (_selectedId == 0)
             // Don't accept just pressing button without input
             return;
 
-        var session = SessionData.GetSessionId(Context, selectedId);
-        SessionId_Label.Text = session.ToString();
+        _selectedSession = SessionData.GetSessionById(Context, _selectedId);
+        SessionId_Label.Text = _selectedSession?.Id.ToString();
     }
 
     private void DisplayDataButton_Click(object sender, EventArgs e)
     {
-        (new DataDisplayForm(this)).Show(); this.Hide();
+        (new DataDisplayForm(this, _selectedSession)).Show(); this.Hide();
     }
 
-    private void Form1_Load(object sender, EventArgs e)
+    private void DataInputForm_Load(object sender, EventArgs e)
     {
     }
 }
