@@ -39,8 +39,8 @@ namespace ComEngineers.API.Commands
 
         public static Session GetLatestSession(ComEngineersContext con)
         {
-            var sessionId = con.Session.OrderBy(x => x.Id).Select(x => x.Id).Last();
-            var sessionTimeCode = con.Session.OrderBy(x => x.Id).Select(x => x.TimeCode).Last();
+            var sessionId = con.Session.OrderBy(x => x.Id).Select(x => x.Id).LastOrDefault();
+            var sessionTimeCode = con.Session.OrderBy(x => x.Id).Select(x => x.TimeCode).LastOrDefault();
 
 
             var accelerometers = con.Accelerometer
