@@ -26,7 +26,7 @@ namespace ComEngineers
             InitializeComponent();
             _priorForm = priorForm;
             _context = priorForm.Context;
-            SessionBox1.SelectedItem = selectedSession!.Id;
+            //SessionBox1.SelectedItem = selectedSession!.Id;
             foreach (var id in SessionData.GetSessionIds(_context))
             {
                 SessionBox1.Items.Add(id);

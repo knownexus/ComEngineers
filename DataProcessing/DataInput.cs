@@ -29,18 +29,26 @@ namespace ComEngineers.DataProcessing
             {
                 lines = content.Split("\n");
             }
+
             lines = lines.Skip(1).SkipLast(1).ToArray();
+            
             //var data = new List<List<object>>();
             var sessions = new List<Session>();
             var accelerometerEntries = new List<Accelerometer>();
             var gyroscopeEntries = new List<Gyroscope>();
             var heartRateEntries = new List<HeartRate>();
             var temperatureEntries = new List<Temperature>();
-
+            var previousValues = new string[] {"0","0","0","0","0","0","0","0" };
             foreach (var line in lines) // 50ms
             {
                 // Data  = PulseData*100, ax, ay, az, yaw, pitch, roll, temperature
+
                 var values = line.Split(",");
+                for (int i = 0; i < values.Length; i++)
+                {
+                    if (values[i] == "")
+                        values[i] = previousValues[i];
+                }
 
                 heartRateEntries.Add(new HeartRate
                 {
@@ -71,6 +79,7 @@ namespace ComEngineers.DataProcessing
                     Value = float.Parse(values[7])
                 });
                 sessions.Add(session);
+                previousValues = values;
             }
             return (accelerometerEntries, gyroscopeEntries, heartRateEntries, temperatureEntries, sessions);
         }

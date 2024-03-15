@@ -1,12 +1,6 @@
 ﻿using ComEngineers.API.Commands;
 using ComEngineers.API.Data;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using ComEngineers.API.Models;
 
 namespace ComEngineers.DataProcessing
@@ -130,16 +124,16 @@ namespace ComEngineers.DataProcessing
                 if(target.Name == "Accelerometer")
                 {
                     var castEntry = entry.Cast<Accelerometer>();
-                    xValues.Add(castEntry.XValue);
-                    yValues.Add(castEntry.YValue);
-                    zValues.Add(castEntry.ZValue);
+                    xValues.Add(Math.Round(castEntry.XValue,1));
+                    yValues.Add(Math.Round(castEntry.YValue,1));
+                    zValues.Add(Math.Round(castEntry.ZValue,1));
                 }
                 else
                 {
                     var castEntry = entry.Cast<Gyroscope>();
-                    xValues.Add(castEntry.XAxis);
-                    yValues.Add(castEntry.YAxis);
-                    zValues.Add(castEntry.ZAxis);
+                    xValues.Add(Math.Round(castEntry.XAxis, 1));
+                    yValues.Add(Math.Round(castEntry.YAxis, 1));
+                    zValues.Add(Math.Round(castEntry.ZAxis, 1));
                 }
 
                 timeCode.Add(counter++);
@@ -159,7 +153,7 @@ namespace ComEngineers.DataProcessing
             foreach (var memberInfo in members)
             {
                 var propertyInfo = typeof(T).GetProperty(memberInfo.Name);
-                var value = myObj.GetType().GetProperty(memberInfo.Name)?.GetValue(myObj, null);
+                var value = myObj?.GetType().GetProperty(memberInfo.Name)?.GetValue(myObj, null);
 
                 propertyInfo?.SetValue(objInstance, value, null);
             }
