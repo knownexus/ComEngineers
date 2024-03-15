@@ -10,8 +10,11 @@
 
   <ItemGroup>
     <Compile Remove="ComEngineersTest\**" />
+    <Compile Remove="Resources\**" />
     <EmbeddedResource Remove="ComEngineersTest\**" />
+    <EmbeddedResource Remove="Resources\**" />
     <None Remove="ComEngineersTest\**" />
+    <None Remove="Resources\**" />
   </ItemGroup>
 
   <ItemGroup>
