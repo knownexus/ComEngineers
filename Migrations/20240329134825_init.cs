@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ComEngineers.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,6 +22,19 @@ namespace ComEngineers.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Session", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TypesOfData",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DataType = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TypesOfData", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -147,6 +160,9 @@ namespace ComEngineers.Migrations
 
             migrationBuilder.DropTable(
                 name: "Temperature");
+
+            migrationBuilder.DropTable(
+                name: "TypesOfData");
 
             migrationBuilder.DropTable(
                 name: "Session");

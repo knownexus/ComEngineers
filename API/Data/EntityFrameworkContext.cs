@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ComEngineers.API.Models;
+﻿using EntityFrame.API.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ComEngineers.API.Data
+namespace EntityFrame.API.Data
 {
-    public class ComEngineersContext : DbContext
+    public class EntityFrameContext : DbContext
     {
         public DbSet<Session> Session { get; set; }
         public DbSet<Accelerometer> Accelerometer { get; set; }

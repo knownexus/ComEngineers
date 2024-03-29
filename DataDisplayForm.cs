@@ -1,9 +1,9 @@
-﻿using ComEngineers.API.Commands;
-using ComEngineers.API.Data;
-using ComEngineers.API.Models;
+﻿using EntityFrame.API.Commands;
+using EntityFrame.API.Data;
+using EntityFrame.API.Models;
 using ComEngineers.DataProcessing;
 using Color = ScottPlot.Color;
-using TypesOfData = ComEngineers.API.Commands.TypesOfData;
+using TypesOfData = EntityFrame.API.Commands.TypesOfData;
 
 namespace ComEngineers
 {
@@ -11,7 +11,7 @@ namespace ComEngineers
     {
         private readonly DataInputForm _priorForm;
         private readonly string[] _dataTypes;
-        private readonly ComEngineersContext _context;
+        private readonly EntityFrameContext _context;
 
         private string _labelX = "";
         private string _labelY = "";
@@ -238,7 +238,7 @@ namespace ComEngineers
                     break;
                 case "Temperature":
                     _labelName = "Temperature (c)";
-                    var (dataForX, dataForY) = DataDisplayProcessing.TemperatureData(sessionId, _context);
+                    var (dataForX, dataForY) = DataDisplayProcessing.ProcessTemperatureData(sessionId, _context);
                     dataX.AddRange(dataForX);
                     dataY.AddRange(dataForY);
 

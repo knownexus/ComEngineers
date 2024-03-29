@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ComEngineers.API.Data;
-using ComEngineers.API.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using EntityFrame.API.Data;
+using EntityFrame.API.Models;
 
-namespace ComEngineers.API.Commands
+namespace EntityFrame.API.Commands
 {
     public static class AccelerometerData
     {
-        public static void AddData(ComEngineersContext con, List<Accelerometer> data)
+        public static void AddData(EntityFrameContext con, List<Accelerometer> data)
         {
             foreach (var entry in data)
             {
@@ -19,7 +13,7 @@ namespace ComEngineers.API.Commands
             }
             con.SaveChanges();
         }
-        public static List<Accelerometer?> GetDataBySessionId(ComEngineersContext con, int sessionId)
+        public static List<Accelerometer?> GetDataBySessionId(EntityFrameContext con, int sessionId)
         {
             List<Accelerometer?> accelerometers = con.Accelerometer.Where(acc => acc.Session.Id == sessionId)
                 .Select(acc => new Accelerometer

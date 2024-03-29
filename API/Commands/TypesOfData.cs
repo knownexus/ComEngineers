@@ -1,18 +1,17 @@
 ﻿using System.Linq.Expressions;
-using ComEngineers.API.Data;
+using EntityFrame.API.Data;
 using System.Reflection;
-using ComEngineers.API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 
-namespace ComEngineers.API.Commands
+namespace EntityFrame.API.Commands
 {
     public static class TypesOfData
     {
-        public static void AddData(ComEngineersContext context)
+        public static void AddData(EntityFrameContext context)
         {
-            string mynamespace = "ComEngineers.API.Models";
+            string mynamespace = "EntityFrame.API.Models";
 
             var types = from t in Assembly.GetExecutingAssembly().GetTypes()
                 where t.IsClass && t.Namespace == mynamespace
@@ -34,13 +33,13 @@ namespace ComEngineers.API.Commands
             context.ChangeTracker.Clear();
         }
 
-        public static EntityEntry<T>? AddIfNotExists<T>(this DbSet<T> dbSet, T entity, Expression<Func<T, bool>> predicate = null) where T : class, new()
+        public static EntityEntry<T>? AddIfNotExists<T>(this DbSet<T> dbSet, T entity, Expression<Func<T, bool>>? predicate = null) where T : class, new()
         {
             var exists = predicate != null ? dbSet.Any(predicate) : dbSet.Any();
             return !exists ? dbSet.Add(entity) : null;
         }
 
-        public static String[] GetDataTypes(ComEngineersContext con)
+        public static String[] GetDataTypes(EntityFrameContext con)
         {
             var dataTypes = con.TypesOfData.Select(x => x.DataType).ToArray();
 

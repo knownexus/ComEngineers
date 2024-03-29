@@ -1,13 +1,13 @@
-﻿using ComEngineers.API.Commands;
-using ComEngineers.API.Data;
+﻿using EntityFrame.API.Commands;
+using EntityFrame.API.Data;
+using EntityFrame.API.Models;
 using System.Reflection;
-using ComEngineers.API.Models;
 
 namespace ComEngineers.DataProcessing
 {
     internal static class DataDisplayProcessing
     {
-        private static List<double> CleanHeartRateData(int sessionId, ComEngineersContext context)
+        private static List<double> CleanHeartRateData(int sessionId, EntityFrameContext context)
         {
             var firstValue = HeartRateData.GetDataBySessionId(context, sessionId).First().Value;
             var data = HeartRateData.GetDataBySessionId(context, sessionId);
@@ -36,7 +36,7 @@ namespace ComEngineers.DataProcessing
             return yValues;
         }
 
-        public static (List<double> dataX, List<double> dataY) GetBpmData(int sessionId, ComEngineersContext context)
+        public static (List<double> dataX, List<double> dataY) GetBpmData(int sessionId, EntityFrameContext context)
         {
             var dataY = new List<double>();
             var dataX = new List<double>();
@@ -80,12 +80,12 @@ namespace ComEngineers.DataProcessing
             return (dataX, dataY);
         }
 
-        public static (List<double> dataForX, List<double> dataForY) TemperatureData(int sessionId, ComEngineersContext context)
+        public static (List<double> dataForX, List<double> dataForY) ProcessTemperatureData(int sessionId, EntityFrameContext context)
         {
             int firstId;
             float firstValue;
-            firstId = API.Commands.TemperatureData.GetDataBySessionId(context, sessionId).First().Id;
-            firstValue = API.Commands.TemperatureData.GetDataBySessionId(context, sessionId).First().Value;
+            firstId = TemperatureData.GetDataBySessionId(context, sessionId).First().Id;
+            firstValue = TemperatureData.GetDataBySessionId(context, sessionId).First().Value;
             // Use these to normalise to 0 to see fluctuations
 
             var count = 0;
@@ -93,7 +93,7 @@ namespace ComEngineers.DataProcessing
             List<double> dataForX = [];
             List<double> dataForY = [];
 
-            foreach (var entry in API.Commands.TemperatureData.GetDataBySessionId(context, sessionId))
+            foreach (var entry in TemperatureData.GetDataBySessionId(context, sessionId))
             {
                 if (temperatureList.Count < 10)
                 {

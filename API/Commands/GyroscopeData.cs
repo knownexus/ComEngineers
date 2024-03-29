@@ -1,16 +1,11 @@
-﻿using ComEngineers.API.Data;
-using ComEngineers.API.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EntityFrame.API.Data;
+using EntityFrame.API.Models;
 
-namespace ComEngineers.API.Commands
+namespace EntityFrame.API.Commands
 {
     public static class GyroscopeData
     {
-        public static void AddData(ComEngineersContext context, List<Gyroscope> data)
+        public static void AddData(EntityFrameContext context, List<Gyroscope> data)
         {
             foreach (var entry in data)
             {
@@ -20,7 +15,7 @@ namespace ComEngineers.API.Commands
             context.SaveChanges();
         }
 
-        public static List<Gyroscope?> GetDataBySessionId(ComEngineersContext con, int sessionId)
+        public static List<Gyroscope?> GetDataBySessionId(EntityFrameContext con, int sessionId)
         {
             List<Gyroscope?> gyroscopes = con.Gyroscope.Where(gy => gy.Session.Id == sessionId)
                 .Select(gy => new Gyroscope

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ComEngineers.API.Data;
+using EntityFrame.API.Data;
 
 namespace ComEngineers
 {
@@ -15,7 +15,7 @@ namespace ComEngineers
         [STAThread]
         private static void Main()
         {
-            var context = new ComEngineersContext();
+            var context = new EntityFrameContext();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new DataInputForm(context));

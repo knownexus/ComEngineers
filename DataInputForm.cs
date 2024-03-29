@@ -1,19 +1,19 @@
 ﻿using System.Text;
-using ComEngineers.API.Commands;
-using ComEngineers.API.Data;
-using ComEngineers.API.Models;
+using EntityFrame.API.Commands;
+using EntityFrame.API.Data;
+using EntityFrame.API.Models;
 using ComEngineers.DataProcessing;
-using TypesOfData = ComEngineers.API.Commands.TypesOfData;
+using TypesOfData = EntityFrame.API.Commands.TypesOfData;
 
 namespace ComEngineers;
 
 public partial class DataInputForm : Form
 {
-    public readonly ComEngineersContext Context;
+    public readonly EntityFrameContext Context;
     private int _selectedId;
     private Session? _selectedSession;
 
-    public DataInputForm(ComEngineersContext context)
+    public DataInputForm(EntityFrameContext context)
     {
         InitializeComponent();
         Context = context;

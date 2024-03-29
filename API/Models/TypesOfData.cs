@@ -1,4 +1,4 @@
-﻿namespace ComEngineers.API.Models
+﻿namespace EntityFrame.API.Models
 {
     public class TypesOfData
     {

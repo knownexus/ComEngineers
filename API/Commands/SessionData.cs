@@ -1,18 +1,11 @@
-﻿using ComEngineers.API.Data;
-using ComEngineers.API.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using EntityFrame.API.Data;
+using EntityFrame.API.Models;
 
-namespace ComEngineers.API.Commands
+namespace EntityFrame.API.Commands
 {
     public static class SessionData
     {
-        public static void AddData(ComEngineersContext context, List<Session> data)
+        public static void AddData(EntityFrameContext context, List<Session> data)
         {
             foreach (var entry in data)
             {
@@ -22,7 +15,7 @@ namespace ComEngineers.API.Commands
             context.SaveChanges();
         }
 
-        public static int GetSessionId(ComEngineersContext con, int sessionId)
+        public static int GetSessionId(EntityFrameContext con, int sessionId)
         {
             var session = con.Session.Where(x => x.Id == sessionId)
                 .Select(x => x.Id).FirstOrDefault();
@@ -30,14 +23,14 @@ namespace ComEngineers.API.Commands
             return sessionId;
         }
 
-        public static int[] GetSessionIds(ComEngineersContext con)
+        public static int[] GetSessionIds(EntityFrameContext con)
         {
             var sessionIdList = con.Session.Select(x => x.Id).ToArray();
 
             return sessionIdList;
         }
 
-        public static Session GetLatestSession(ComEngineersContext con)
+        public static Session GetLatestSession(EntityFrameContext con)
         {
             var sessionId = con.Session.OrderBy(x => x.Id).Select(x => x.Id).LastOrDefault();
             var sessionTimeCode = con.Session.OrderBy(x => x.Id).Select(x => x.TimeCode).LastOrDefault();
@@ -97,7 +90,7 @@ namespace ComEngineers.API.Commands
             return session;
         }
 
-        public static Session? GetSessionById(ComEngineersContext con, int sessionId)
+        public static Session? GetSessionById(EntityFrameContext con, int sessionId)
         {
             var session = con.Session.FirstOrDefault(x => x.Id == sessionId);
 

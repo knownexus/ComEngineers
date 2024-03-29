@@ -1,12 +1,6 @@
-﻿using ComEngineers.API.Commands;
-using ComEngineers.API.Data;
-using ComEngineers.API.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EntityFrame.API.Commands;
+using EntityFrame.API.Data;
+using EntityFrame.API.Models;
 
 namespace ComEngineers.DataProcessing
 {
@@ -18,7 +12,7 @@ namespace ComEngineers.DataProcessing
             List<HeartRate> heartRateEntries, 
             List<Temperature> temperatureEntries,
             List<Session> sessions
-            ) ProcessData(string content, ComEngineersContext context)
+            ) ProcessData(string content, EntityFrameContext context)
         {
             var session = new Session
             {
@@ -83,7 +77,7 @@ namespace ComEngineers.DataProcessing
             }
             return (accelerometerEntries, gyroscopeEntries, heartRateEntries, temperatureEntries, sessions);
         }
-        public static void AddProcessedData(ComEngineersContext context, (List<Accelerometer> accelerometerEntries, List<Gyroscope> gyroscopeEntries, List<HeartRate> heartRateEntries, List<Temperature> temperatureEntries, List<Session> sessions) data)
+        public static void AddProcessedData(EntityFrameContext context, (List<Accelerometer> accelerometerEntries, List<Gyroscope> gyroscopeEntries, List<HeartRate> heartRateEntries, List<Temperature> temperatureEntries, List<Session> sessions) data)
         {
             SessionData.AddData(context, data.sessions);
             AccelerometerData.AddData(context, data.accelerometerEntries);
